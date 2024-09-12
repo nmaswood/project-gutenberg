@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
+import Cookies from 'js-cookie'
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
@@ -9,7 +12,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { PreviousBooksList } from "@/components/PreviousBooksList"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { bookIdSchema, analyzeSchema } from '@/lib/validations'
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { useToast } from "@/hooks/use-toast"
 
 interface BookData {
@@ -38,7 +40,7 @@ export default function ExplorePage() {
   const [previousBooks, setPreviousBooks] = useState<BookData[]>([])
 
   useEffect(() => {
-    const storedBooks = localStorage.getItem('previousBooks')
+    const storedBooks = Cookies.get('previousBooks')
     if (storedBooks) {
       setPreviousBooks(JSON.parse(storedBooks))
     }
@@ -65,6 +67,15 @@ export default function ExplorePage() {
     },
     enabled: false,
   });
+
+  useEffect(() => {
+    if (data) {
+      const updatedBooks = [data, ...previousBooks.filter(book => book.id !== data.id)].slice(0, 5)
+      setPreviousBooks(updatedBooks)
+      Cookies.set('previousBooks', JSON.stringify(updatedBooks), { expires: 7 }) // Expires in 7 days
+    }
+  }, [data, previousBooks]);
+
 
   const { toast } = useToast()
 

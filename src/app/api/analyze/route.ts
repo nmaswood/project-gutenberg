@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     let prompt = '';
     switch (analysisType) {
       case 'summary':
-        prompt = `Summarize the book in about 5 sentences:\n\n${truncatedContent}`;
+        prompt = `Summarize the text provided in about 5 sentences:\n\n${truncatedContent}`;
         break;
       case 'sentiment':
         prompt = `Analyze the sentiment of the following text. Is it generally positive, negative, or neutral? Explain why:\n\n${truncatedContent}`;

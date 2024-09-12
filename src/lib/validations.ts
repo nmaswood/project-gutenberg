@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const bookIdSchema = z.string().min(1, "Book ID is required");
 
 export const analysisTypeSchema = z.enum(['summary', 'sentiment', 'characters', 'language'], {
-  errorMap: (issue, ctx) => ({ message: "Invalid analysis type. Must be 'summary', 'sentiment', 'characters', or 'language'." }),
+  errorMap: () => ({ message: "Invalid analysis type. Must be 'summary', 'sentiment', 'characters', or 'language'." }),
 });
 
 export const analyzeSchema = z.object({
